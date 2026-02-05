@@ -1,8 +1,11 @@
 import jwt
-import smtplib
 from datetime import datetime, timedelta
-from email.mime.text import MIMEText
+from fastapi import HTTPException, Security, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from .config import settings
+
+# Security Scheme
+security = HTTPBearer()
 
 def create_verification_token(email: str):
     """Generates a JWT valid for 10 minutes"""
@@ -31,3 +34,32 @@ def send_verification_email(to_email: str, token: str):
     print(f"🔗 SECURE LINK (Valid 10 mins): {link}")
     print("="*60 + "\n")
     return True
+
+# --- NEW ADMIN AUTH FUNCTIONS ---
+
+def create_admin_token(username: str):
+    """Generates a Token valid for 24 hours"""
+    expiration = datetime.utcnow() + timedelta(hours=24)
+    payload = {
+        "sub": username, 
+        "role": "admin", 
+        "exp": expiration
+    }
+    token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+    return token
+
+def get_current_admin(credentials: HTTPAuthorizationCredentials = Security(security)):
+    """
+    Dependency that validates the token. 
+    Use this to protect routes.
+    """
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        if payload.get("role") != "admin":
+            raise HTTPException(status_code=403, detail="Not authorized")
+        return payload["sub"]
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")

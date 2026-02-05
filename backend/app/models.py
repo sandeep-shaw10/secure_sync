@@ -32,3 +32,17 @@ class IngestDataRequest(BaseModel):
     plant_email: EmailStr  # Identifying the plant
     data_type: Literal["production_order", "inventory", "quality_report"]
     payload: dict
+
+# --- NEW MODELS FOR ADMIN IP MANAGEMENT ---
+class IPUpdateRequest(BaseModel):
+    plant_email: EmailStr
+    ip_address: str
+
+# --- NEW MODEL FOR LOGIN ---
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str

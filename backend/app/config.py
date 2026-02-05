@@ -5,7 +5,11 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     DB_NAME: str = "plant_db"
     
-    # Email settings (mocked defaults for demo)
+    # --- NEW ADMIN CREDENTIALS ---
+    ADMIN_USERNAME: str = "admin"
+    ADMIN_PASSWORD: str = "admin123"  # Change this in production!
+
+    # Email settings
     SMTP_SERVER: str = "smtp.mock.com"
     SMTP_PORT: int = 587
     SMTP_USER: str = "admin@example.com"
