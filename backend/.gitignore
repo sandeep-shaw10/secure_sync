@@ -1,0 +1,37 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environments (Important for your local venv) ---
+venv/
+env/
+.venv/
+.env
+
+# --- Environment Variables (SECURITY CRITICAL) ---
+# Never commit your API keys or database passwords
+.env
+.env.local
+.env.*
+
+# --- Docker ---
+# If you ever switch to local bind mounts for Mongo
+mongo_data/
+# Docker logs
+*.log
+
+# --- IDE Settings ---
+# VS Code
+.vscode/
+# PyCharm
+.idea/
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+
+# --- Distribution / Builds ---
+build/
+dist/
+*.egg-info/
