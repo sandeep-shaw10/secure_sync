@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from ..models import AdminLoginRequest, TokenResponse
-from ..utils import create_admin_token
+from ..models import AdminLoginRequest, PlantLoginRequest, TokenResponse, Plant
+from ..utils import create_admin_token, create_access_token, verify_password, hash_password
 from ..config import settings
 
 router = APIRouter(tags=["Auth"])
@@ -15,3 +15,19 @@ async def login(login_req: AdminLoginRequest):
         return {"access_token": token, "token_type": "Bearer"}
     
     raise HTTPException(status_code=401, detail="Invalid credentials")
+
+# --- NEW PLANT LOGIN ---
+@router.post("/auth/plant/login", response_model=TokenResponse)
+async def plant_login(login_req: PlantLoginRequest):
+    # 1. Find Plant
+    plant = await Plant.find_one(Plant.email == login_req.email)
+    if not plant:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    # 2. Verify Password
+    if not verify_password(login_req.password, plant.password_hash):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    # 3. Generate Token with role="plant"
+    token = create_access_token(plant.email, role="plant")
+    return {"access_token": token, "token_type": "Bearer"}

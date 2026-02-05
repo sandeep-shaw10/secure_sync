@@ -13,7 +13,7 @@ services:
       - "8000:8000"
     environment:
       - MONGODB_URL=mongodb://mongodb:27017
-      - SECRET_KEY=supersecretkey123
+      - SECRET_KEY=8c6e08bf186a1ba68f8bd81c2663f1ed0d17475cb2f50853dafd944053c886f8
       # Configure your real SMTP settings here for production
       - SMTP_SERVER=smtp.gmail.com
       - SMTP_PORT=587

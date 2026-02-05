@@ -5,3 +5,5 @@ beanie
 pydantic-settings
 pyjwt
 email-validator
+passlib
+bcrypt==3.2.2

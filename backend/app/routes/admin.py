@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends # Import Depends
 from typing import List
 from ..models import Plant, CreatePlantRequest, IPUpdateRequest
 from ..utils import create_verification_token, send_verification_email, get_current_admin # Import get_current_admin
+from ..utils import hash_password
 
 # --- UPDATE THIS LINE ---
 # This applies the security check to ALL endpoints in this router
@@ -20,13 +21,20 @@ async def add_plant(plant_req: CreatePlantRequest):
     if existing:
         raise HTTPException(status_code=400, detail="Plant email already registered")
 
-    new_plant = Plant(name=plant_req.name, email=plant_req.email)
+    # Hash the password before saving
+    hashed_pwd = hash_password(plant_req.password)
+
+    new_plant = Plant(
+        name=plant_req.name, 
+        email=plant_req.email,
+        password_hash=hashed_pwd # Save Hash
+    )
     await new_plant.insert()
 
     token = create_verification_token(new_plant.email)
     send_verification_email(new_plant.email, token)
 
-    return {"message": "Plant added and verification email sent.", "plant_id": str(new_plant.id)}
+    return {"message": "Plant added with password protection.", "plant_id": str(new_plant.id)}
 
 # -------------------------------
 # 2. GET ALL PLANTS
