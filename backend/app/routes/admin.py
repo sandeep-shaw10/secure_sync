@@ -107,3 +107,18 @@ async def remove_ip_from_whitelist(plant_email: str, ip_address: str):
         "message": f"IP {ip_address} removed successfully.",
         "current_ips": plant.whitelisted_ips
     }
+
+# -------------------------------
+# 6. DELETE PLANT (New)
+# -------------------------------
+@router.delete("/plant/{email}")
+async def delete_plant(email: str):
+    """
+    Deletes a plant and all its data.
+    """
+    plant = await Plant.find_one(Plant.email == email)
+    if not plant:
+        raise HTTPException(status_code=404, detail="Plant not found")
+    
+    await plant.delete()
+    return {"message": f"Plant {plant.name} ({email}) deleted successfully."}

@@ -29,7 +29,7 @@ curl -X POST http://backend:8000/auth/plant/login \
 #The "Spoof" (Try to Send Data) Now the attacker tries to use that valid token to send fake data. Replace <PASTE_TOKEN_HERE> with the token you just copied.
 curl -X POST http://backend:8000/api/ingest \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <PASTE_TOKEN_HERE>" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyQGd3YWxpb3IuY29tIiwicm9sZSI6InBsYW50IiwiZXhwIjoxNzcwNDY1MzIwfQ.AsBl0ZIWrzYj_3aj5bMF_dpIil46SDG2fkw-i1BuuUw" \
   -d '{
     "plant_email": "manager@gwalior.com",
     "data_type": "inventory",
