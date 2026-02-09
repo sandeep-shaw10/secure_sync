@@ -1,8 +1,23 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
+from motor.motor_asyncio import AsyncIOMotorGridFSBucket  # <-- Import This
 from .models import Plant, PlantData
-from .config import settings
+
+client = None
+grid_fs = None  # Global GridFS instance
 
 async def init_db():
-    client = AsyncIOMotorClient(settings.MONGODB_URL)
-    await init_beanie(database=client[settings.DB_NAME], document_models=[Plant, PlantData])
+    global client, grid_fs
+    # Update with your actual Mongo URL if different
+    client = AsyncIOMotorClient("mongodb://mongodb:27017")
+    
+    # Initialize Beanie (ODM)
+    await init_beanie(database=client.secure_sync, document_models=[Plant, PlantData])
+    
+    # Initialize GridFS Bucket
+    db = client.secure_sync
+    grid_fs = AsyncIOMotorGridFSBucket(db)
+    print("✅ Database & GridFS Initialized")
+
+def get_grid_fs():
+    return grid_fs

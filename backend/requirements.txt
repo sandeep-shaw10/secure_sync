@@ -7,3 +7,5 @@ pyjwt
 email-validator
 passlib
 bcrypt==3.2.2
+cryptography
+python-multipart
