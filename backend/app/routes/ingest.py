@@ -14,15 +14,25 @@ async def ingest_stream(
     plant_email: str = Form(...),
     encrypted_aes_key: str = Form(...),
     iv: str = Form(...),
-    file: UploadFile = File(...),  # The Encrypted Blob
+    file: UploadFile = File(...),
+    request: Request = None,  # <--- ADD REQUEST HERE
     current_plant_email: str = Depends(get_current_plant)
 ):
     # 1. Security Check: Token vs Form Email
     if current_plant_email != plant_email:
         raise HTTPException(status_code=403, detail="Token mismatch.")
 
-    # 2. Security Check: IP Whitelist (Basic check, request object needed for IP)
-    # Note: In a real app, pass 'request: Request' and check IP here.
+    # 2. Security Check: IP Whitelist (FIXED)
+    client_ip = request.client.host
+    plant = await Plant.find_one(Plant.email == plant_email)
+    
+    if not plant:
+        raise HTTPException(status_code=404, detail="Plant not found")
+
+    # --- THE MISSING CHECK ---
+    if client_ip not in plant.whitelisted_ips:
+        raise HTTPException(status_code=403, detail=f"Access Denied: IP {client_ip} is not whitelisted.")
+    # -------------------------
     
     fs = get_grid_fs()
     

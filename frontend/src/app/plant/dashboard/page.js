@@ -162,15 +162,28 @@ export default function PlantDashboard() {
         {/* HEADER */}
         <div className="bg-gray-900 p-6 border-b border-gray-700 flex justify-between items-center">
           <div>
-             <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-               🛡️ Secure Data Uplink <span className="text-xs bg-blue-600 px-2 py-1 rounded">AES-256</span>
-             </h1>
-             <p className="text-gray-400 text-sm mt-1">GridFS Enabled • 50MB Capable</p>
+            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              🛡️ Secure Data Uplink <span className="text-xs bg-blue-600 px-2 py-1 rounded">AES-256</span>
+            </h1>
+            <p className="text-gray-400 text-sm mt-1">GridFS Enabled • 50MB Capable</p>
           </div>
-          <div className="text-right">
-             <div className={`text-xs font-bold px-3 py-1 rounded ${publicKey ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
+          
+          <div className="flex items-center gap-4">
+            {/* Status Indicator */}
+            <div className={`text-xs font-bold px-3 py-1 rounded ${publicKey ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
                 {publicKey ? 'RSA ONLINE' : 'OFFLINE'}
-             </div>
+            </div>
+
+            {/* LOGOUT BUTTON */}
+            <button 
+              onClick={() => {
+                localStorage.removeItem('plant_token');
+                router.push('/plant/login');
+              }}
+              className="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded text-sm font-bold border border-red-600 transition"
+            >
+              LOGOUT
+            </button>
           </div>
         </div>
 
